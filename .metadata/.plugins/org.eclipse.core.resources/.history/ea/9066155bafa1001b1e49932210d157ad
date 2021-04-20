@@ -1,0 +1,172 @@
+package com.javalec.base;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+
+public class UserQuery {
+
+	private JFrame frame;
+	private JScrollPane scrollPane;
+	private JTable inner_Table;
+	private JButton btnNewButton;
+	private JTextField textField;
+	private JComboBox comboBox;
+	
+	private final String url_mysql = "jdbc:mysql://192.168.0.179/useraddress?serverTimezone=UTC&characterEncoding=utf8";
+	private final String id_mysql = "root";
+	private final String pw_mysql = "qwer1234";
+
+	DefaultTableModel Outer_Table = new DefaultTableModel();
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UserQuery window = new UserQuery();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public UserQuery() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+		});
+		frame.setBounds(100, 100, 450, 585);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(getScrollPane());
+		frame.getContentPane().add(getBtnNewButton());
+		frame.getContentPane().add(getTextField());
+		frame.getContentPane().add(getComboBox());
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setBounds(6, 56, 438, 168);
+			scrollPane.setViewportView(getInner_Table());
+		}
+		return scrollPane;
+	}
+	private JTable getInner_Table() {
+		if (inner_Table == null) {
+			inner_Table = new JTable();
+			inner_Table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			inner_Table.setModel(Outer_Table);
+		}
+		return inner_Table;
+	}
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("New button");
+			btnNewButton.setBounds(326, 17, 117, 29);
+		}
+		return btnNewButton;
+	}
+	private JTextField getTextField() {
+		if (textField == null) {
+			textField = new JTextField();
+			textField.setBounds(156, 17, 130, 26);
+			textField.setColumns(10);
+		}
+		return textField;
+	}
+	private JComboBox getComboBox() {
+		if (comboBox == null) {
+			comboBox = new JComboBox();
+			comboBox.setBounds(27, 17, 88, 27);
+		}
+		return comboBox;
+	}
+	
+	// 화면 Table 초기화
+	private void tableInit() {
+		Outer_Table.addColumn("Order");
+		Outer_Table.addColumn("Name");
+		Outer_Table.addColumn("Phone");
+		Outer_Table.addColumn("Relation");
+		
+		int i = Outer_Table.getRowCount();
+		for(int j=0; j<i; j++) {
+			Outer_Table.removeRow(0);
+		}
+		
+		inner_Table.setAutoResizeMode(inner_Table.AUTO_RESIZE_OFF);
+		
+		int vColIndex = 0;
+		TableColumn col = inner_Table.getColumnModel().getColumn(vColIndex);
+		int width = 30;
+		col.setPreferredWidth(width);
+		
+		vColIndex = 1;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+
+		vColIndex = 2;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+		
+		vColIndex = 3;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+		
+	}
+	
+	private void searchAction() {
+		String query = "select seqno, name, telno, relation from userinfo ";
+		try {
+			Class.forName("");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			
+			ResultSet rs = stmt_mysql.executeQuery(query);
+			while(rs.next()) {
+				String[] qTxt = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+				Outer_Table.addRow(qTxt);
+			}
+			
+			conn_mysql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

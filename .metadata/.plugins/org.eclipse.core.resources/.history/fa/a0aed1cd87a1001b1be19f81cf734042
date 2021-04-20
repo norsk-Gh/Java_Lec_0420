@@ -1,0 +1,71 @@
+import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
+import javax.swing.JFrame;
+
+public class AdressInsert {
+
+	private JFrame frame;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					AdressInsert window = new AdressInsert();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public AdressInsert() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private final String url_mysql = "jdbc:mysql://127.0.0.1/useraddress?serverTimezone=UTC&characterEncoding=utf8"
+
+			private final String id_mysql = "root";
+	private final String pw_mysql = "qwer1234";
+	
+	private void insertAction() {//사용자 정보 입력
+		PreparedStatement ps = null;
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql,pw_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			
+			String query = "insert into userinfo (name) values (?)";
+			ps = conn_mysql.prepareStatement(query);
+			ps.setString(1, tfName.getText().trim());
+			ps.executeUpdate();
+			
+			conn_mysql.close();
+			
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+}

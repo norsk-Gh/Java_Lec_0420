@@ -1,0 +1,282 @@
+package com.javalec.base;
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.SwingConstants;
+import javax.swing.JLabel;
+
+public class UserQuery {
+
+	private JFrame frame;
+	private JScrollPane scrollPane;
+	private JTable inner_Table;
+	private JButton btnNewButton;
+	private JTextField textField;
+	private JComboBox comboBox;
+	
+	private final String url_mysql = "jdbc:mysql://192.168.0.179/useraddress?serverTimezone=UTC&characterEncoding=utf8";
+	private final String id_mysql = "root";
+	private final String pw_mysql = "qwer1234";
+
+	DefaultTableModel Outer_Table = new DefaultTableModel();
+	private JTextField tfCount;
+	private JTextField textField_1;
+	private JLabel lblNewLabel;
+	private JLabel lblNewLabel_1;
+	private JTextField textField_2;
+	private JLabel lblNewLabel_2;
+	private JTextField textField_3;
+	private JLabel lblNewLabel_3;
+	private JTextField textField_4;
+	private JLabel lblNewLabel_4;
+	private JTextField textField_5;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UserQuery window = new UserQuery();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public UserQuery() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				tableInit();
+			}
+		});
+		frame.setBounds(100, 100, 450, 585);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(getScrollPane());
+		frame.getContentPane().add(getBtnNewButton());
+		frame.getContentPane().add(getTextField());
+		frame.getContentPane().add(getComboBox());
+		frame.getContentPane().add(getTfCount());
+		frame.getContentPane().add(getTextField_1());
+		frame.getContentPane().add(getLblNewLabel());
+		frame.getContentPane().add(getLblNewLabel_1());
+		frame.getContentPane().add(getTextField_2());
+		frame.getContentPane().add(getLblNewLabel_2());
+		frame.getContentPane().add(getTextField_3());
+		frame.getContentPane().add(getLblNewLabel_3());
+		frame.getContentPane().add(getTextField_4());
+		frame.getContentPane().add(getLblNewLabel_4());
+		frame.getContentPane().add(getTextField_5());
+	}
+	private JScrollPane getScrollPane() {
+		if (scrollPane == null) {
+			scrollPane = new JScrollPane();
+			scrollPane.setBounds(6, 56, 438, 168);
+			scrollPane.setViewportView(getInner_Table());
+		}
+		return scrollPane;
+	}
+	private JTable getInner_Table() {
+		if (inner_Table == null) {
+			inner_Table = new JTable();
+			inner_Table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			inner_Table.setModel(Outer_Table);
+		}
+		return inner_Table;
+	}
+	private JButton getBtnNewButton() {
+		if (btnNewButton == null) {
+			btnNewButton = new JButton("New button");
+			btnNewButton.setBounds(326, 17, 117, 29);
+		}
+		return btnNewButton;
+	}
+	private JTextField getTextField() {
+		if (textField == null) {
+			textField = new JTextField();
+			textField.setBounds(156, 17, 130, 26);
+			textField.setColumns(10);
+		}
+		return textField;
+	}
+	private JComboBox getComboBox() {
+		if (comboBox == null) {
+			comboBox = new JComboBox();
+			comboBox.setBounds(27, 17, 88, 27);
+		}
+		return comboBox;
+	}
+	
+	// 화면 Table 초기화
+	private void tableInit() {
+		Outer_Table.addColumn("Order");
+		Outer_Table.addColumn("Name");
+		Outer_Table.addColumn("Phone");
+		Outer_Table.addColumn("Relation");
+		
+		int i = Outer_Table.getRowCount();
+		for(int j=0; j<i; j++) {
+			Outer_Table.removeRow(0);
+		}
+		
+		inner_Table.setAutoResizeMode(inner_Table.AUTO_RESIZE_OFF);
+		
+		int vColIndex = 0;
+		TableColumn col = inner_Table.getColumnModel().getColumn(vColIndex);
+		int width = 30;
+		col.setPreferredWidth(width);
+		
+		vColIndex = 1;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+
+		vColIndex = 2;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+		
+		vColIndex = 3;
+		col = inner_Table.getColumnModel().getColumn(vColIndex);
+		width = 100;
+		col.setPreferredWidth(width);
+		
+	}
+	
+	
+	private void searchAction() {
+		String query = "select seqno, name, telno, relation from userinfo ";
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			
+			ResultSet rs = stmt_mysql.executeQuery(query);
+			while(rs.next()) {
+				String[] qTxt = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};
+				Outer_Table.addRow(qTxt);
+			}
+			
+			conn_mysql.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	private JTextField getTfCount() {
+		if (tfCount == null) {
+			tfCount = new JTextField();
+			tfCount.setHorizontalAlignment(SwingConstants.TRAILING);
+			tfCount.setBounds(296, 236, 130, 26);
+			tfCount.setColumns(10);
+		}
+		return tfCount;
+	}
+	private JTextField getTextField_1() {
+		if (textField_1 == null) {
+			textField_1 = new JTextField();
+			textField_1.setBounds(76, 300, 130, 26);
+			textField_1.setColumns(10);
+		}
+		return textField_1;
+	}
+	private JLabel getLblNewLabel() {
+		if (lblNewLabel == null) {
+			lblNewLabel = new JLabel("New label");
+			lblNewLabel.setBounds(6, 305, 61, 16);
+		}
+		return lblNewLabel;
+	}
+	private JLabel getLblNewLabel_1() {
+		if (lblNewLabel_1 == null) {
+			lblNewLabel_1 = new JLabel("New label");
+			lblNewLabel_1.setBounds(0, 341, 61, 16);
+		}
+		return lblNewLabel_1;
+	}
+	private JTextField getTextField_2() {
+		if (textField_2 == null) {
+			textField_2 = new JTextField();
+			textField_2.setColumns(10);
+			textField_2.setBounds(70, 336, 130, 26);
+		}
+		return textField_2;
+	}
+	private JLabel getLblNewLabel_2() {
+		if (lblNewLabel_2 == null) {
+			lblNewLabel_2 = new JLabel("New label");
+			lblNewLabel_2.setBounds(0, 379, 61, 16);
+		}
+		return lblNewLabel_2;
+	}
+	private JTextField getTextField_3() {
+		if (textField_3 == null) {
+			textField_3 = new JTextField();
+			textField_3.setColumns(10);
+			textField_3.setBounds(70, 374, 130, 26);
+		}
+		return textField_3;
+	}
+	private JLabel getLblNewLabel_3() {
+		if (lblNewLabel_3 == null) {
+			lblNewLabel_3 = new JLabel("New label");
+			lblNewLabel_3.setBounds(0, 419, 61, 16);
+		}
+		return lblNewLabel_3;
+	}
+	private JTextField getTextField_4() {
+		if (textField_4 == null) {
+			textField_4 = new JTextField();
+			textField_4.setColumns(10);
+			textField_4.setBounds(70, 414, 130, 26);
+		}
+		return textField_4;
+	}
+	private JLabel getLblNewLabel_4() {
+		if (lblNewLabel_4 == null) {
+			lblNewLabel_4 = new JLabel("New label");
+			lblNewLabel_4.setBounds(0, 458, 61, 16);
+		}
+		return lblNewLabel_4;
+	}
+	private JTextField getTextField_5() {
+		if (textField_5 == null) {
+			textField_5 = new JTextField();
+			textField_5.setColumns(10);
+			textField_5.setBounds(70, 453, 130, 26);
+		}
+		return textField_5;
+	}
+}

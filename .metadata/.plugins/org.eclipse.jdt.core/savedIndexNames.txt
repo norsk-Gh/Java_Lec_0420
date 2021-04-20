@@ -1,0 +1,5 @@
+INDEX VERSION 1.131+/Volumes/Data/Ai/iDO/Java_Lec_0420/.metadata/.plugins/org.eclipse.jdt.core
+3951852900.index
+3562963215.index
+3015498994.index
+3087282572.index
