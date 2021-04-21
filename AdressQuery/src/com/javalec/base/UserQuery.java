@@ -24,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class UserQuery {
 
@@ -31,10 +33,10 @@ public class UserQuery {
 	private JScrollPane scrollPane;
 	private JTable inner_Table;
 	private JButton searchBtn;
-	private JTextField textField;
+	private JTextField tfSelection;
 	private JComboBox selectBox;
 	
-	private final String url_mysql = "jdbc:mysql://192.168.0.179/useraddress?serverTimezone=UTC&characterEncoding=utf8";
+	private final String url_mysql = "jdbc:mysql://ip/useraddress?serverTimezone=UTC&characterEncoding=utf8";
 	private final String id_mysql = "root";
 	private final String pw_mysql = "qwer1234";
 
@@ -95,7 +97,7 @@ public class UserQuery {
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(getScrollPane());
 		frame.getContentPane().add(getSearchBtn());
-		frame.getContentPane().add(getTextField());
+		frame.getContentPane().add(getTfSelection());
 		frame.getContentPane().add(getSelectBox());
 		frame.getContentPane().add(getTfCount());
 		frame.getContentPane().add(getTfSeqNo());
@@ -136,17 +138,24 @@ public class UserQuery {
 	private JButton getSearchBtn() {
 		if (searchBtn == null) {
 			searchBtn = new JButton("Search");
+			searchBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					//TODO
+					conditionQuery();
+				}
+			});
 			searchBtn.setBounds(326, 17, 117, 29);
 		}
 		return searchBtn;
 	}
-	private JTextField getTextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setBounds(156, 17, 130, 26);
-			textField.setColumns(10);
+	private JTextField getTfSelection() {
+		if (tfSelection == null) {
+			tfSelection = new JTextField();
+			tfSelection.setBounds(156, 17, 130, 26);
+			tfSelection.setColumns(10);
 		}
-		return textField;
+		return tfSelection;
 	}
 	private JComboBox getSelectBox() {
 		if (selectBox == null) {
@@ -340,13 +349,14 @@ public class UserQuery {
 		private void tableClick() {
 			int i = inner_Table.getSelectedRow();
 			String wkSeq = (String) inner_Table.getValueAt(i, 0);
-			String query =  "select seqno, name, telno, relation from userinfo where seqno="+ wkSeq; //TODO
+			String query =  "select seqno, name, telno, address, email, relation from userinfo where seqno="+ wkSeq; //TODO
 			try {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
 				Statement stmt_mysql = conn_mysql.createStatement();
 				ResultSet rs = stmt_mysql.executeQuery(query);
-				while(rs.next()) {
+				//while
+					if (rs.next()) {
 					tfSeqNo.setText(rs.getString(1)); 
 					tfName.setText(rs.getString(2));
 					tfTPhone.setText(rs.getString(3));
@@ -358,5 +368,67 @@ public class UserQuery {
 				e.printStackTrace();
 			}
 
+		}
+		
+		// TODO Conditional Searching
+		private void conditionQuery() {
+			int i = selectBox.getSelectedIndex();
+			String conditonQueryColumn = "";
+			
+			switch (i) {
+			case 0:
+				conditonQueryColumn = "name";
+				break;
+			case 1:
+				conditonQueryColumn = "telno";
+				break;
+			case 2:
+				conditonQueryColumn = "address";
+				break;
+			case 4:
+				conditonQueryColumn = "email";
+				break;
+			case 5:
+				conditonQueryColumn = "relation";
+				break;
+			default:
+				break;
+			}
+			//System.out.println(conditonQueryColumn);
+			
+			tableInit();
+			clearColumn();
+			conditionQueryAction(conditonQueryColumn);
+		}
+		
+		private void conditionQueryAction(String columnName) {
+			String query1 = "select seqno, name, telno, address, email, relation from userinfo where " + columnName;
+			String query2 =  " like '%" + tfSelection.getText() + "%'";
+			//System.out.println(query1 + query2);
+			int dataCount = 0;
+			try {
+				Class.forName("com.mysql.cj.jdbc.Driver");
+				Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+				Statement stmt_mysql = conn_mysql.createStatement();
+				ResultSet rs = stmt_mysql.executeQuery(query1 + query2);
+				while(rs.next()) {
+					String[] qTxt = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)};
+					Outer_Table.addRow(qTxt);
+					dataCount++;
+				}
+				
+				conn_mysql.close();
+				tfCount.setText(Integer.toString(dataCount));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		private void clearColumn() {
+			tfSeqNo.setText("");
+			tfName.setText("");
+			tfTPhone.setText("");
+			tfAdress.setText("");
+			tfEmail.setText("");
+			tfRelation.setText("");
 		}
 }
