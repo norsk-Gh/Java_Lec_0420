@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -21,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.SwingConstants;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,32 +31,35 @@ import java.awt.event.ActionEvent;
 
 public class UserQuery {
 
+	private final String url_mysql = "jdbc:mysql://192.168.35.13/useraddress?serverTimezone=UTC&characterEncoding=utf8";
+	private final String id_mysql = "root";
+	private final String pw_mysql = "qwer1234";
+	
+	DefaultTableModel Outer_Table = new DefaultTableModel();
+	
 	private JFrame frame;
 	private JScrollPane scrollPane;
 	private JTable inner_Table;
-	private JButton searchBtn;
+	private JButton btn_OK;
 	private JTextField tfSelection;
 	private JComboBox selectBox;
 	
-	private final String url_mysql = "jdbc:mysql://ip/useraddress?serverTimezone=UTC&characterEncoding=utf8";
-	private final String id_mysql = "root";
-	private final String pw_mysql = "qwer1234";
-
-	DefaultTableModel Outer_Table = new DefaultTableModel();
 	
-	private JTextField tfCount;
-	private JTextField tfSeqNo;
+	private JTextField tf_Count;
+	private JTextField tf_SeqNo;
 	private JLabel lblNewLabel;
 	private JLabel lblNewLabel_1;
-	private JTextField tfName;
+	private JTextField tf_Name;
 	private JLabel lblNewLabel_2;
-	private JTextField tfTPhone;
+	private JTextField tf_Telno;
 	private JLabel lblNewLabel_3;
-	private JTextField tfAdress;
+	private JTextField tf_Adress;
 	private JLabel lblNewLabel_4;
-	private JTextField tfEmail;
+	private JTextField tf_Email;
 	private JLabel lblNewLabel_5;
-	private JTextField tfRelation;
+	private JTextField tf_Relation;
+	private JButton btn_Update;
+	private JButton btn_Delete;
 	
 	/**
 	 * Launch the application.
@@ -96,22 +101,24 @@ public class UserQuery {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(getScrollPane());
-		frame.getContentPane().add(getSearchBtn());
+		frame.getContentPane().add(getBtn_OK());
 		frame.getContentPane().add(getTfSelection());
 		frame.getContentPane().add(getSelectBox());
-		frame.getContentPane().add(getTfCount());
-		frame.getContentPane().add(getTfSeqNo());
+		frame.getContentPane().add(getTf_Count());
+		frame.getContentPane().add(getTf_SeqNo());
 		frame.getContentPane().add(getLblNewLabel());
 		frame.getContentPane().add(getLblNewLabel_1());
-		frame.getContentPane().add(getTfName());
+		frame.getContentPane().add(getTf_Name());
 		frame.getContentPane().add(getLblNewLabel_2());
-		frame.getContentPane().add(getTfTPhone());
+		frame.getContentPane().add(getTf_Telno());
 		frame.getContentPane().add(getLblNewLabel_3());
-		frame.getContentPane().add(getTfAdress());
+		frame.getContentPane().add(getTf_Adress());
 		frame.getContentPane().add(getLblNewLabel_4());
-		frame.getContentPane().add(getTfEmail());
+		frame.getContentPane().add(getTf_Email());
 		frame.getContentPane().add(getLblNewLabel_5());
-		frame.getContentPane().add(getTfRelation());
+		frame.getContentPane().add(getTf_Relation());
+		frame.getContentPane().add(getBtn_Update());
+		frame.getContentPane().add(getBtn_Delete());
 	}
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
@@ -135,19 +142,18 @@ public class UserQuery {
 		}
 		return inner_Table;
 	}
-	private JButton getSearchBtn() {
-		if (searchBtn == null) {
-			searchBtn = new JButton("Search");
-			searchBtn.addActionListener(new ActionListener() {
+	private JButton getBtn_OK() {
+		if (btn_OK == null) {
+			btn_OK = new JButton("Search");
+			btn_OK.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					
-					//TODO
 					conditionQuery();
 				}
 			});
-			searchBtn.setBounds(326, 17, 117, 29);
+			btn_OK.setBounds(326, 17, 117, 29);
 		}
-		return searchBtn;
+		return btn_OK;
 	}
 	private JTextField getTfSelection() {
 		if (tfSelection == null) {
@@ -168,24 +174,24 @@ public class UserQuery {
 	
 	
 	
-	private JTextField getTfCount() {
-		if (tfCount == null) {
-			tfCount = new JTextField();
-			tfCount.setEditable(false);
-			tfCount.setHorizontalAlignment(SwingConstants.TRAILING);
-			tfCount.setBounds(296, 236, 130, 26);
-			tfCount.setColumns(10);
+	private JTextField getTf_Count() {
+		if (tf_Count == null) {
+			tf_Count = new JTextField();
+			tf_Count.setEditable(false);
+			tf_Count.setHorizontalAlignment(SwingConstants.TRAILING);
+			tf_Count.setBounds(296, 236, 130, 26);
+			tf_Count.setColumns(10);
 		}
-		return tfCount;
+		return tf_Count;
 	}
-	private JTextField getTfSeqNo() {
-		if (tfSeqNo == null) {
-			tfSeqNo = new JTextField();
-			tfSeqNo.setEditable(false);
-			tfSeqNo.setBounds(76, 300, 130, 26);
-			tfSeqNo.setColumns(10);
+	private JTextField getTf_SeqNo() {
+		if (tf_SeqNo == null) {
+			tf_SeqNo = new JTextField();
+			tf_SeqNo.setEditable(false);
+			tf_SeqNo.setBounds(76, 300, 130, 26);
+			tf_SeqNo.setColumns(10);
 		}
-		return tfSeqNo;
+		return tf_SeqNo;
 	}
 	private JLabel getLblNewLabel() {
 		if (lblNewLabel == null) {
@@ -201,14 +207,13 @@ public class UserQuery {
 		}
 		return lblNewLabel_1;
 	}
-	private JTextField getTfName() {
-		if (tfName == null) {
-			tfName = new JTextField();
-			tfName.setEditable(false);
-			tfName.setColumns(10);
-			tfName.setBounds(70, 336, 130, 26);
+	private JTextField getTf_Name() {
+		if (tf_Name == null) {
+			tf_Name = new JTextField();
+			tf_Name.setColumns(10);
+			tf_Name.setBounds(70, 336, 130, 26);
 		}
-		return tfName;
+		return tf_Name;
 	}
 	private JLabel getLblNewLabel_2() {
 		if (lblNewLabel_2 == null) {
@@ -217,14 +222,13 @@ public class UserQuery {
 		}
 		return lblNewLabel_2;
 	}
-	private JTextField getTfTPhone() {
-		if (tfTPhone == null) {
-			tfTPhone = new JTextField();
-			tfTPhone.setEditable(false);
-			tfTPhone.setColumns(10);
-			tfTPhone.setBounds(70, 374, 130, 26);
+	private JTextField getTf_Telno() {
+		if (tf_Telno == null) {
+			tf_Telno = new JTextField();
+			tf_Telno.setColumns(10);
+			tf_Telno.setBounds(70, 374, 130, 26);
 		}
-		return tfTPhone;
+		return tf_Telno;
 	}
 	private JLabel getLblNewLabel_3() {
 		if (lblNewLabel_3 == null) {
@@ -233,14 +237,13 @@ public class UserQuery {
 		}
 		return lblNewLabel_3;
 	}
-	private JTextField getTfAdress() {
-		if (tfAdress == null) {
-			tfAdress = new JTextField();
-			tfAdress.setEditable(false);
-			tfAdress.setColumns(10);
-			tfAdress.setBounds(70, 414, 130, 26);
+	private JTextField getTf_Adress() {
+		if (tf_Adress == null) {
+			tf_Adress = new JTextField();
+			tf_Adress.setColumns(10);
+			tf_Adress.setBounds(70, 414, 130, 26);
 		}
-		return tfAdress;
+		return tf_Adress;
 	}
 	private JLabel getLblNewLabel_4() {
 		if (lblNewLabel_4 == null) {
@@ -249,14 +252,13 @@ public class UserQuery {
 		}
 		return lblNewLabel_4;
 	}
-	private JTextField getTfEmail() {
-		if (tfEmail == null) {
-			tfEmail = new JTextField();
-			tfEmail.setEditable(false);
-			tfEmail.setColumns(10);
-			tfEmail.setBounds(70, 453, 130, 26);
+	private JTextField getTf_Email() {
+		if (tf_Email == null) {
+			tf_Email = new JTextField();
+			tf_Email.setColumns(10);
+			tf_Email.setBounds(70, 453, 130, 26);
 		}
-		return tfEmail;
+		return tf_Email;
 	}
 	private JLabel getLblNewLabel_5() {
 		if (lblNewLabel_5 == null) {
@@ -265,14 +267,13 @@ public class UserQuery {
 		}
 		return lblNewLabel_5;
 	}
-	private JTextField getTfRelation() {
-		if (tfRelation == null) {
-			tfRelation = new JTextField();
-			tfRelation.setEditable(false);
-			tfRelation.setColumns(10);
-			tfRelation.setBounds(76, 486, 130, 26);
+	private JTextField getTf_Relation() {
+		if (tf_Relation == null) {
+			tf_Relation = new JTextField();
+			tf_Relation.setColumns(10);
+			tf_Relation.setBounds(76, 486, 130, 26);
 		}
-		return tfRelation;
+		return tf_Relation;
 	}
 	
 	// Window Table init!
@@ -283,6 +284,9 @@ public class UserQuery {
 			Outer_Table.addColumn("Adress");
 			Outer_Table.addColumn("Email");
 			Outer_Table.addColumn("Relation");
+			
+			Outer_Table.setColumnCount(6);   // 도영님은 이거 안주셨던데?
+			
 			
 			int i = Outer_Table.getRowCount();
 			for(int j=0; j<i; j++) {
@@ -339,7 +343,7 @@ public class UserQuery {
 				}
 				
 				conn_mysql.close();
-				tfCount.setText(Integer.toString(dataCount));
+				tf_Count.setText(Integer.toString(dataCount));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -357,12 +361,12 @@ public class UserQuery {
 				ResultSet rs = stmt_mysql.executeQuery(query);
 				//while
 					if (rs.next()) {
-					tfSeqNo.setText(rs.getString(1)); 
-					tfName.setText(rs.getString(2));
-					tfTPhone.setText(rs.getString(3));
-					tfAdress.setText(rs.getString(4));
-					tfEmail.setText(rs.getString(5));
-					tfRelation.setText(rs.getString(6));
+					tf_SeqNo.setText(rs.getString(1)); 
+					tf_Name.setText(rs.getString(2));
+					tf_Telno.setText(rs.getString(3));
+					tf_Adress.setText(rs.getString(4));
+					tf_Email.setText(rs.getString(5));
+					tf_Relation.setText(rs.getString(6));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -370,9 +374,9 @@ public class UserQuery {
 
 		}
 		
-		// TODO Conditional Searching
+		// 콤보박스 상태에 따라 검색하는 내용이 날라지게 하는거임 
 		private void conditionQuery() {
-			int i = selectBox.getSelectedIndex();
+			int i = selectBox.getSelectedIndex();  // 콤보박스의 인덱스는 0부터 시작함.
 			String conditonQueryColumn = "";
 			
 			switch (i) {
@@ -396,9 +400,10 @@ public class UserQuery {
 			}
 			//System.out.println(conditonQueryColumn);
 			
-			tableInit();
-			clearColumn();
-			conditionQueryAction(conditonQueryColumn);
+			tableInit();       // 검색을 하게되면  inner테이블을 초기화 시켜줘야함
+			clearColumn();     // 이건 박스 밑에 뜨는 것들을 초기화 시켜줌!
+			conditionQueryAction(conditonQueryColumn);  // 다 초기화 시켜준 다음에 이제 검색버튼을 눌렀을때 
+														// 처음에 했더 이너테이블에 나올때까지 뜨게하는 거랑 같은데 like 조건만 추가가 된거임
 		}
 		
 		private void conditionQueryAction(String columnName) {
@@ -418,17 +423,134 @@ public class UserQuery {
 				}
 				
 				conn_mysql.close();
-				tfCount.setText(Integer.toString(dataCount));
+				tf_Count.setText(Integer.toString(dataCount));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
+		
+		
 		private void clearColumn() {
-			tfSeqNo.setText("");
-			tfName.setText("");
-			tfTPhone.setText("");
-			tfAdress.setText("");
-			tfEmail.setText("");
-			tfRelation.setText("");
+			tf_SeqNo.setText("");
+			tf_Name.setText("");
+			tf_Telno.setText("");
+			tf_Adress.setText("");
+			tf_Email.setText("");
+			tf_Relation.setText("");
 		}
+	private JButton getBtn_Update() {
+		if (btn_Update == null) {
+			btn_Update = new JButton("UPDATE");
+			btn_Update.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					reviseAction();
+					tableInit();
+					searchAction();
+					clearColumn();
+					
+				}
+			});
+			btn_Update.setBounds(156, 524, 117, 29);
+		}
+		return btn_Update;
+	}
+	private JButton getBtn_Delete() {
+		if (btn_Delete == null) {
+			btn_Delete = new JButton("DELETE");
+			btn_Delete.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					deleteQueryAction(); 
+					
+				}
+			});
+			btn_Delete.setBounds(309, 524, 117, 29);
+		}
+		return btn_Delete;
+	}
+	
+	private void deleteQueryAction() {
+		
+		
+		int dataCount = 0;
+		//삭제하기 위한 쿼리
+		String queryDel = "delete from userinfo where seqno = '";
+		String queryDel2 = tf_SeqNo.getText().toString();
+		String queryDel3 = "'";
+		String selectedName = tf_Name.getText().toString();
+		
+		// 다시 보여주기 위한 쿼리
+		String query = "select seqno, name, telno, address, email, relation from userinfo ";
+				
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			int rsDel = stmt_mysql.executeUpdate(queryDel+queryDel2+queryDel3);  // 삭제는 또update로 써야함;;;;
+
+			//초기화시켜주기
+			tableInit();      
+			clearColumn();     // 이건 박스 밑에 뜨는 것들을 초기화 시켜줌!
+			
+			//삭제하고 나서의 리스트 다시 보여주기
+			ResultSet rs = stmt_mysql.executeQuery(query);
+			while(rs.next()) {
+				String[] qTxt = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)};
+				Outer_Table.addRow(qTxt);
+				dataCount++;
+			}
+			conn_mysql.close();
+			
+			// 삭제됐다고 메세지 보여주기
+			JOptionPane.showMessageDialog(null, selectedName + "'s information was deleted successfully");
+			tf_Count.setText(Integer.toString(dataCount));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void reviseAction() {
+		
+		PreparedStatement ps = null;  
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			Connection conn_mysql = DriverManager.getConnection(url_mysql, id_mysql, pw_mysql);
+			Statement stmt_mysql = conn_mysql.createStatement();
+			
+			String query1 = "update userinfo set name = ?, telno = ?,address = ?, email = ?, relation = ? "; //끝에 띄어쓰기
+			String query2 = "where seqno = ? ";
+			
+			ps = conn_mysql.prepareStatement(query1+query2);
+			ps.setString(1, tf_Name.getText());
+			ps.setString(2, tf_Telno.getText());
+			ps.setString(3, tf_Adress.getText());
+			ps.setString(4, tf_Email.getText());
+			ps.setString(5, tf_Relation.getText());
+			ps.setString(6, tf_SeqNo.getText());
+			
+			ps.executeUpdate();
+			
+			conn_mysql.close();
+			
+			
+			
+			JOptionPane.showMessageDialog(null, tf_Name.getText() + "'s information was updeted successfully");
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

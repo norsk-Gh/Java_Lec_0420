@@ -13,6 +13,26 @@ import java.awt.event.ActionEvent;
 
 public class AdressInsert {
 
+	
+	/*용어정리
+	 * ResultSet executeQuery() - SELECT 쿼리를 실행할 때 사용되며 ResultSet을 결과값으로 리턴한다.
+
+		int executeUpdate() - INSERT, UPDATE, DELETE 쿼리를 실행할 때 사용되며, 실행결과 변경된 레코드의 개수를 리턴한다.
+	 * 
+	 * setString은 첫번째 인자로 물음표의 위치가 들어가고 두번째로는 값이 들어간다.
+	 * 
+	 * PreparedStatement는 Statement와 동일한 기능을 하지만 차이점이 있다면 전자는 미리 SQL쿼리의 틀을 짜 놓고 나중에 값일 지정한다는 것이다
+	 * 
+	 * 
+	 */
+	
+	
+	
+	
+	
+	
+	
+	
 	private JFrame frame;
 
 	/**
@@ -30,7 +50,7 @@ public class AdressInsert {
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the application.
 	 */
@@ -91,7 +111,7 @@ public class AdressInsert {
 		frame.getContentPane().add(btnEnter);
 	}
 	
-	private final String url_mysql = "jdbc:mysql://192.168.0.179/useraddress?serverTimezone=UTC&characterEncoding=utf8";
+	private final String url_mysql = "jdbc:mysql://192.168.35.13/useraddress?serverTimezone=UTC&characterEncoding=utf8";
 	private final String id_mysql = "root";
 	private final String pw_mysql = "qwer1234";
 	

@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.wb.internal.swing.model.property.editor.models.combo.ComboBoxModelDialog">
-		<item key="x" value="239"/>
-		<item key="y" value="413"/>
-		<item key="width" value="525"/>
+		<item key="x" value="411"/>
+		<item key="y" value="166"/>
+		<item key="width" value="526"/>
 		<item key="height" value="325"/>
+	</section>
+	<section name="org.eclipse.wb.internal.swing.model.property.editor.font.FontDialog">
+		<item key="x" value="470"/>
+		<item key="y" value="190"/>
+		<item key="width" value="500"/>
+		<item key="height" value="473"/>
 	</section>
 </section>
