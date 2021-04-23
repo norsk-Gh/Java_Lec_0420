@@ -9,9 +9,9 @@
     <fullyQualifiedTypeName name="javax.swing.JOptionPane"/>
     <fullyQualifiedTypeName name="java.sql.PreparedStatement"/>
     <fullyQualifiedTypeName name="javax.swing.table.DefaultTableModel"/>
-    <fullyQualifiedTypeName name="com.khankong.function.Bean"/>
-    <fullyQualifiedTypeName name="com.khankong.function.DbAction"/>
     <fullyQualifiedTypeName name="java.lang.Integer"/>
     <fullyQualifiedTypeName name="com.khankong.address.Address"/>
+    <fullyQualifiedTypeName name="com.khankong.function.Bean"/>
     <fullyQualifiedTypeName name="java.util.ArrayList"/>
+    <fullyQualifiedTypeName name="com.khankong.function.DbAction"/>
 </qualifiedTypeNameHistroy>

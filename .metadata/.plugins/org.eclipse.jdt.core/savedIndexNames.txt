@@ -1,6 +1,3 @@
 INDEX VERSION 1.131+/Users/parkjw/Documents/Java_Lec_0420/.metadata/.plugins/org.eclipse.jdt.core
-451618544.index
 3951852900.index
 3087282572.index
-3015498994.index
-344107576.index
